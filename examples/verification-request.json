@@ -1,0 +1,10 @@
+{
+  "name": "Sandbox age check",
+  "purpose": "Test age verification",
+  "credential_type": "PID",
+  "policy_profile": "high",
+  "redirect_uri": "https://your-app.example/verification-return",
+  "requested_claims": [["age_over_18"]],
+  "registration_certificate_id": "REPLACE_WITH_PROVISIONED_CERTIFICATE_ID",
+  "rp_instance_id": "REPLACE_WITH_PROVISIONED_INSTANCE_ID"
+}
