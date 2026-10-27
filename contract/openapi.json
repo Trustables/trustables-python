@@ -1,0 +1,1530 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Trustables SDK API",
+    "version": "0.1.0",
+    "description": "Integration reference for verification requests, sessions and results. Replace the example hostname with the API base URL assigned to your organisation."
+  },
+  "servers": [
+    {
+      "url": "https://your-api-host.example",
+      "description": "Placeholder: replace with your assigned API base URL"
+    }
+  ],
+  "paths": {
+    "/api/v1/rp/orgs/{org_id}/verification-requests": {
+      "post": {
+        "summary": "Create a verification request",
+        "tags": [
+          "Verification"
+        ],
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "org_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Trustables-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "sandbox"
+              ]
+            },
+            "description": "Explicit environment selection. Sandbox requires provisioned wallet access."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVerificationRequestBody"
+              }
+            }
+          }
+        },
+        "operationId": "createVerificationRequest",
+        "x-trustables-retry-safe": false
+      }
+    },
+    "/api/v1/rp/orgs/{org_id}/verification-requests/{request_id}/session": {
+      "get": {
+        "summary": "Start a fresh verification session",
+        "tags": [
+          "Verification"
+        ],
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "org_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Trustables-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "simulator",
+                "sandbox"
+              ]
+            },
+            "description": "Explicit environment selection. Sandbox requires provisioned wallet access."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationSessionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Creates a new session on each call. Do not prefetch or automatically retry. Wallet requests need an active, unexpired request and configured RP credentials. Simulator uses a campaign ID and a Simulator key; no wallet credentials are required. Open the returned authorization URL unchanged, including any hosted review step.",
+        "operationId": "createSession",
+        "x-trustables-retry-safe": false
+      }
+    },
+    "/api/v1/rp/orgs/{org_id}/sessions/{state_id}/status": {
+      "get": {
+        "summary": "Read verification session status",
+        "tags": [
+          "Verification"
+        ],
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "org_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "state_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Trustables-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "simulator",
+                "sandbox"
+              ]
+            },
+            "description": "Explicit environment selection. Sandbox requires provisioned wallet access."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionStatusResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "API error; preserve status and detail. Do not automatically retry session creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getSession",
+        "x-trustables-retry-safe": true
+      }
+    },
+    "/api/v1/rp/orgs/{org_id}/simulator/campaigns": {
+      "post": {
+        "operationId": "createSimulatorCampaign",
+        "summary": "Create a Simulator campaign",
+        "tags": [
+          "Simulator campaigns"
+        ],
+        "description": "Use a Simulator API key, or a console session with X-Trustables-Environment: simulator. Maximum 25 active campaigns per organisation. This is not a wallet verification request.",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "org_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Trustables-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "simulator"
+            },
+            "description": "Console sessions must select Simulator. The Simulator API key already fixes the mode."
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campaign"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied or credential mode mismatch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Environment or session state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid path parameters or request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Campaign or session creation limit reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampaignBody"
+              },
+              "example": {
+                "name": "Checkout test",
+                "purpose": "Test customer onboarding",
+                "profile": "pid"
+              }
+            }
+          }
+        },
+        "x-trustables-retry-safe": false
+      }
+    },
+    "/api/v1/rp/simulator/inspect": {
+      "post": {
+        "operationId": "inspectSimulator",
+        "summary": "Inspect a Simulator browser session",
+        "tags": [
+          "Simulator browser"
+        ],
+        "description": "The token in the body authorises only this expiring session. Send no organisation API key. Complete any required hosted review first; its token is not a Simulator token.",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulatorInspect"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied or hosted review required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Expired or invalid Simulator capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenBody"
+              },
+              "example": {
+                "token": "REPLACE_WITH_THE_43_CHARACTER_SIMULATOR_TOKEN"
+              }
+            }
+          }
+        },
+        "x-trustables-retry-safe": true
+      }
+    },
+    "/api/v1/rp/simulator/complete": {
+      "post": {
+        "operationId": "completeSimulator",
+        "summary": "Select a synthetic outcome",
+        "tags": [
+          "Simulator browser"
+        ],
+        "description": "One completion per session. Complete any required hosted review first. Ineligible intentionally returns completed and accepted=true; your application must reject the synthetic underage customer.",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulatorResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied or hosted review required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Environment or session state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Expired or invalid Simulator capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OutcomeBody"
+              },
+              "example": {
+                "token": "REPLACE_WITH_THE_43_CHARACTER_SIMULATOR_TOKEN",
+                "scenario": "approved"
+              }
+            }
+          }
+        },
+        "x-trustables-retry-safe": false
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateVerificationRequestBody": {
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 2,
+            "title": "Name",
+            "type": "string"
+          },
+          "purpose": {
+            "minLength": 3,
+            "title": "Purpose",
+            "type": "string"
+          },
+          "credential_type": {
+            "pattern": "^(PID|EAA)$",
+            "title": "Credential Type",
+            "type": "string"
+          },
+          "policy_profile": {
+            "pattern": "^(high|substantial|low)$",
+            "title": "Policy Profile",
+            "type": "string"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "minLength": 10,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expires At"
+          },
+          "callback_mode": {
+            "default": "async",
+            "pattern": "^(async|sync)$",
+            "title": "Callback Mode",
+            "type": "string"
+          },
+          "redirect_uri": {
+            "maxLength": 2048,
+            "minLength": 8,
+            "title": "Redirect Uri",
+            "type": "string"
+          },
+          "registration_certificate_id": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 3,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Registration Certificate Id"
+          },
+          "requested_claims": {
+            "items": {
+              "items": {},
+              "type": "array"
+            },
+            "minItems": 1,
+            "title": "Requested Claims",
+            "type": "array"
+          },
+          "rp_service_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rp Service Id"
+          },
+          "rp_instance_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rp Instance Id"
+          }
+        },
+        "required": [
+          "name",
+          "purpose",
+          "credential_type",
+          "policy_profile",
+          "redirect_uri",
+          "requested_claims"
+        ],
+        "title": "CreateVerificationRequestBody",
+        "type": "object"
+      },
+      "VerificationRequestResponse": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "purpose": {
+            "title": "Purpose",
+            "type": "string"
+          },
+          "credential_type": {
+            "title": "Credential Type",
+            "type": "string"
+          },
+          "policy_profile": {
+            "title": "Policy Profile",
+            "type": "string"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "callback_mode": {
+            "title": "Callback Mode",
+            "type": "string"
+          },
+          "active": {
+            "title": "Active",
+            "type": "boolean"
+          },
+          "published_assets": {
+            "additionalProperties": true,
+            "title": "Published Assets",
+            "type": "object"
+          },
+          "intended_use_identifier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Intended Use Identifier"
+          },
+          "requested_claims": {
+            "anyOf": [
+              {
+                "items": {
+                  "items": {},
+                  "type": "array"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Requested Claims"
+          },
+          "rp_service_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rp Service Id"
+          },
+          "rp_instance_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rp Instance Id"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "purpose",
+          "credential_type",
+          "policy_profile",
+          "expires_at",
+          "callback_mode",
+          "active",
+          "published_assets"
+        ],
+        "title": "VerificationRequestResponse",
+        "type": "object"
+      },
+      "VerificationSessionResponse": {
+        "properties": {
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "authorization_request_url": {
+            "title": "Authorization Request Url",
+            "type": "string"
+          },
+          "request_uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Request Uri"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "State"
+          },
+          "nonce": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nonce"
+          },
+          "expires_at": {
+            "title": "Expires At",
+            "type": "string"
+          },
+          "transaction_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Transaction Id"
+          },
+          "mode": {
+            "default": "wallet",
+            "title": "Mode",
+            "type": "string"
+          },
+          "simulated": {
+            "default": false,
+            "title": "Simulated",
+            "type": "boolean"
+          },
+          "billable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Billable"
+          },
+          "branded_verification_page": {
+            "default": false,
+            "title": "Branded Verification Page",
+            "type": "boolean"
+          },
+          "branded_qr_code": {
+            "default": false,
+            "title": "Branded Qr Code",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "session_id",
+          "authorization_request_url",
+          "expires_at"
+        ],
+        "title": "VerificationSessionResponse",
+        "type": "object"
+      },
+      "SessionStatusResponse": {
+        "properties": {
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Created At"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expires At"
+          },
+          "submission_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Submission Id"
+          },
+          "accepted": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Accepted"
+          },
+          "failure_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Failure Reason"
+          },
+          "verified_claims": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Verified Claims"
+          },
+          "mode": {
+            "default": "wallet",
+            "title": "Mode",
+            "type": "string"
+          },
+          "simulated": {
+            "default": false,
+            "title": "Simulated",
+            "type": "boolean"
+          },
+          "billable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Billable"
+          },
+          "claims": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Claims"
+          },
+          "verification_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Verification Status"
+          },
+          "trust_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Trust Status"
+          }
+        },
+        "required": [
+          "status",
+          "session_id"
+        ],
+        "title": "SessionStatusResponse",
+        "type": "object"
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "description": "Error reason or validation details."
+          }
+        }
+      },
+      "CampaignBody": {
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 2,
+            "title": "Name",
+            "type": "string"
+          },
+          "purpose": {
+            "maxLength": 1000,
+            "minLength": 3,
+            "title": "Purpose",
+            "type": "string"
+          },
+          "profile": {
+            "default": "pid",
+            "enum": [
+              "pid",
+              "mdl"
+            ],
+            "title": "Profile",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "purpose"
+        ],
+        "title": "CampaignBody",
+        "type": "object"
+      },
+      "Campaign": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "purpose",
+          "profile",
+          "mode",
+          "simulated"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "maxLength": 255,
+            "minLength": 2,
+            "title": "Name",
+            "type": "string"
+          },
+          "purpose": {
+            "maxLength": 1000,
+            "minLength": 3,
+            "title": "Purpose",
+            "type": "string"
+          },
+          "profile": {
+            "default": "pid",
+            "enum": [
+              "pid",
+              "mdl"
+            ],
+            "title": "Profile",
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "const": "simulator"
+          },
+          "simulated": {
+            "type": "boolean",
+            "const": true
+          }
+        }
+      },
+      "TokenBody": {
+        "properties": {
+          "token": {
+            "maxLength": 64,
+            "minLength": 40,
+            "title": "Token",
+            "type": "string",
+            "writeOnly": true,
+            "description": "The short-lived token from a Simulator capability, not a hosted review token. Replace the example; never log it.",
+            "examples": [
+              "REPLACE_WITH_THE_43_CHARACTER_SIMULATOR_TOKEN"
+            ]
+          }
+        },
+        "required": [
+          "token"
+        ],
+        "title": "TokenBody",
+        "type": "object"
+      },
+      "OutcomeBody": {
+        "properties": {
+          "token": {
+            "maxLength": 64,
+            "minLength": 40,
+            "title": "Token",
+            "type": "string",
+            "writeOnly": true,
+            "description": "The short-lived token from a Simulator capability, not a hosted review token. Replace the example; never log it.",
+            "examples": [
+              "REPLACE_WITH_THE_43_CHARACTER_SIMULATOR_TOKEN"
+            ]
+          },
+          "scenario": {
+            "enum": [
+              "approved",
+              "consent_rejected",
+              "missing_attributes",
+              "ineligible",
+              "timeout"
+            ],
+            "title": "Scenario",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "scenario"
+        ],
+        "title": "OutcomeBody",
+        "type": "object"
+      },
+      "SimulatorInspect": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SimulatorResult"
+          },
+          {
+            "type": "object",
+            "required": [
+              "campaign",
+              "preview_claims"
+            ],
+            "properties": {
+              "campaign": {
+                "$ref": "#/components/schemas/Campaign"
+              },
+              "preview_claims": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        ]
+      },
+      "SimulatorResult": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "completed",
+              "failed",
+              "expired"
+            ]
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Created At"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expires At"
+          },
+          "submission_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Submission Id"
+          },
+          "accepted": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Accepted"
+          },
+          "failure_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Failure Reason"
+          },
+          "verified_claims": {
+            "type": "null"
+          },
+          "mode": {
+            "const": "simulator",
+            "type": "string"
+          },
+          "simulated": {
+            "const": true,
+            "type": "boolean"
+          },
+          "billable": {
+            "const": false,
+            "type": "boolean"
+          },
+          "claims": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Claims"
+          },
+          "verification_status": {
+            "type": "string",
+            "enum": [
+              "simulated_pending",
+              "simulated_approved",
+              "simulated_failed"
+            ]
+          },
+          "trust_status": {
+            "type": "string",
+            "const": "not_evaluated"
+          }
+        },
+        "required": [
+          "status",
+          "session_id",
+          "mode",
+          "simulated",
+          "billable"
+        ],
+        "title": "SimulatorResult",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API key",
+        "description": "Use your raw trustables_ API key. Send it as Authorization: Bearer followed by the key, only from your backend."
+      }
+    }
+  }
+}

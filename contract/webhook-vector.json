@@ -1,0 +1,13 @@
+{
+  "secret": "fixture-only-secret",
+  "method": "POST",
+  "path": "/webhooks/trustables",
+  "body": "{\"submission_id\":\"fixture-only\"}",
+  "headers": {
+    "Content-Type": "application/json",
+    "X-Trustables-Timestamp": "1767225600",
+    "X-Trustables-Signature": "v1=0d05a899f3c132a5d80a0a8a962699a197c98aa8463da1c59f83ba9f93ea8df4",
+    "Idempotency-Key": "fixture-only"
+  },
+  "now": 1767225600
+}
