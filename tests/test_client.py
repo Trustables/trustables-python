@@ -33,6 +33,32 @@ class ClientTests(unittest.TestCase):
         client = Trustables(base_url=f'http://127.0.0.1:{server.server_port}', api_key='fixture-key', org_id='org', environment=environment, allow_insecure_localhost=True)
         return client, requests
 
+    def test_widget_and_qr_routes_and_environment_guards(self):
+        client, requests = self.server(lambda *_: (200, {'status': 'pending'}, {}), 'sandbox')
+        client.get_widget_review('a/b')
+        client.activate_widget('a/b')
+        client.get_widget_status('a/b')
+        client.cancel_widget('a/b')
+        client.create_qr('https://merchant.example/handoff#opaque', size=240)
+        self.assertEqual([(r['method'], r['path']) for r in requests], [
+            ('GET', '/api/v1/rp/orgs/org/sessions/a%2Fb/widget'),
+            ('POST', '/api/v1/rp/orgs/org/sessions/a%2Fb/widget'),
+            ('GET', '/api/v1/rp/orgs/org/sessions/a%2Fb/widget/status'),
+            ('POST', '/api/v1/rp/orgs/org/sessions/a%2Fb/widget/cancel'),
+            ('POST', '/api/v1/rp/orgs/org/qr')])
+        self.assertTrue(all(r['headers']['x-trustables-environment']=='sandbox' for r in requests))
+        self.assertEqual(requests[-1]['body']['size'],240)
+        simulator, unused = self.server(lambda *_: (200, {}, {}))
+        with self.assertRaises(ValueError): simulator.activate_widget('a')
+        self.assertEqual(unused, [])
+
+    def test_private_http_requires_explicit_opt_in(self):
+        opts=dict(base_url='http://api.internal:8000',api_key='test',org_id='org',environment='sandbox')
+        with self.assertRaises(ValueError): Trustables(**opts)
+        with self.assertRaises(ValueError): Trustables(**opts,allow_insecure_localhost=True)
+        Trustables(**opts,allow_insecure_http=True)
+        with self.assertRaises(ValueError): Trustables(**{**opts,'base_url':'http://user:password@api.internal'},allow_insecure_http=True)
+
     def test_all_simulator_flows(self):
         for fixture in CASES:
             with self.subTest(scenario=fixture['scenario']):
