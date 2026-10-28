@@ -28,9 +28,11 @@ class _NoRedirect(HTTPRedirectHandler):
 class Trustables:
     def __init__(self, *, base_url: str, api_key: str, org_id: str,
                  environment: Literal['simulator', 'sandbox'], timeout: float = 10,
-                 allow_insecure_localhost: bool = False):
+                 allow_insecure_localhost: bool = False,
+                 allow_insecure_http: bool = False):
         url = urlsplit(base_url)
-        local = allow_insecure_localhost and url.scheme == 'http' and url.hostname in {'localhost', '127.0.0.1', '::1'}
+        local = (allow_insecure_http or (allow_insecure_localhost and url.hostname in {'localhost', '127.0.0.1', '::1'})) and url.scheme == 'http' # explicit trusted-network opt-in
+        # Legacy localhost opt-in stays supported.
         if (url.scheme != 'https' and not local) or not url.hostname or url.username or url.password or url.query or url.fragment or url.path not in {'', '/'}:
             raise ValueError('base_url must be an HTTPS origin (no path, credentials, query or fragment)')
         if not api_key or '\r' in api_key or '\n' in api_key or not org_id:
@@ -81,6 +83,29 @@ class Trustables:
 
     def get_session(self, session_id: str) -> SessionStatusResponse:
         return cast(SessionStatusResponse, self._request('GET', self._org_path + '/sessions/' + self._id(session_id) + '/status'))
+
+    def get_widget_review(self, session_id: str) -> dict[str, Any]:
+        self._require_sandbox()
+        return self._request('GET', self._org_path + '/sessions/' + self._id(session_id) + '/widget')
+
+    def activate_widget(self, session_id: str) -> dict[str, Any]:
+        self._require_sandbox()
+        return self._request('POST', self._org_path + '/sessions/' + self._id(session_id) + '/widget', {})
+
+    def get_widget_status(self, session_id: str) -> dict[str, Any]:
+        self._require_sandbox()
+        return self._request('GET', self._org_path + '/sessions/' + self._id(session_id) + '/widget/status')
+
+    def cancel_widget(self, session_id: str) -> dict[str, Any]:
+        self._require_sandbox()
+        return self._request('POST', self._org_path + '/sessions/' + self._id(session_id) + '/widget/cancel', {})
+
+    def create_qr(self, data: str, *, size: int = 220) -> dict[str, Any]:
+        return self._request('POST', self._org_path + '/qr', {'data': data, 'size': size})
+
+    def _require_sandbox(self) -> None:
+        if self._environment != 'sandbox':
+            raise ValueError('Widget operations require sandbox environment')
 
     def inspect_simulator(self, token: str) -> SimulatorInspect:
         self._require_simulator()

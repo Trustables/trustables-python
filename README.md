@@ -1,6 +1,6 @@
 # Trustables Python SDK
 
-Server-side preview, version **0.1.0**. Requires Python 3.11+. Preview interfaces may change. Supports Simulator and provisioned Wallet Sandbox access.
+Server-side preview, version **0.1.1**. Requires Python 3.11+. Preview interfaces may change. Supports Simulator and provisioned Wallet Sandbox access.
 
 ## Install
 
@@ -108,3 +108,16 @@ Documentation: https://docs.trustables.de/sdks/
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Merchant widget adapters
+
+The client exposes widget review, activation, status and cancellation methods, plus
+a QR helper for merchant-owned phone handoffs. Widget methods require Sandbox.
+Bind all calls to the authenticated customer/order and enforce CSRF and ownership
+in your application. Widget status alone never authorizes fulfillment; read the
+accepted result for the exact session. These calls never retry automatically.
+
+HTTPS remains the default. `allow_insecure_http=True` (Python) or
+`allowInsecureHttp: true` (TypeScript) explicitly permits an operator-configured
+HTTP origin on a trusted private network. It sends the API key without TLS; do not
+use it across untrusted networks or derive the origin from browser input.
