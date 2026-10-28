@@ -5,10 +5,27 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "trustables-sdk"
 version = "0.1.0"
-description = "Trustables server-side Python SDK (private preview)"
+description = "Trustables server-side Python SDK (preview)"
 requires-python = ">=3.11"
 readme = "README.md"
-classifiers = ["Private :: Do Not Upload"]
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://docs.trustables.de"
+Documentation = "https://docs.trustables.de/sdks/"
+Repository = "https://github.com/Trustables/trustables-python"
+Issues = "https://github.com/Trustables/trustables-python/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,6 +1,12 @@
 # Trustables Python SDK
 
-Private server-side preview, version **0.1.0**. Requires Python 3.11+. Not published to PyPI. Pin a reviewed Git commit; preview interfaces may change. Repository access is required.
+Server-side preview, version **0.1.0**. Requires Python 3.11+. Preview interfaces may change. Supports Simulator and provisioned Wallet Sandbox access.
+
+## Install
+
+```sh
+python -m pip install trustables-sdk
+```
 
 ## Install and test from source
 
@@ -95,6 +101,10 @@ a separate test with your provisioned Sandbox credentials.
 `contract/openapi.json` and generated language models share version 0.1.0 with the
 other SDK. See `contract/README.md` for provenance and the export/update procedure.
 Both snapshots must be updated together for API changes. CI checks generated types,
-compiles/packages the SDK, and runs tests. There is no package publishing workflow.
+compiles/packages the SDK, and runs tests. Version tags (`vX.Y.Z`) publish through GitHub Actions trusted publishing. Releases must match the package version and belong to `main`; version bumps are reviewed in a pull request before tagging.
 
-Documentation source: https://github.com/Trustables/trustables/blob/main/public/docs/sdks.mdx
+Documentation: https://docs.trustables.de/sdks/
+
+## License
+
+MIT — see [LICENSE](LICENSE).
