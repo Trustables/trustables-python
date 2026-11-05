@@ -1,6 +1,6 @@
 # Trustables Python SDK
 
-Server-side preview, version **0.1.1**. Requires Python 3.11+. Preview interfaces may change. Supports Simulator and provisioned Wallet Sandbox access.
+Server-side preview, version **0.1.2**. Requires Python 3.11+. Preview interfaces may change. Supports Simulator and provisioned Wallet Sandbox access.
 
 ## Install
 
@@ -121,3 +121,27 @@ HTTPS remains the default. `allow_insecure_http=True` (Python) or
 `allowInsecureHttp: true` (TypeScript) explicitly permits an operator-configured
 HTTP origin on a trusted private network. It sends the API key without TLS; do not
 use it across untrusted networks or derive the origin from browser input.
+
+## Typed environments
+
+```python
+import os
+from trustables import Environment, Trustables
+
+api = Trustables(
+    base_url=os.environ['TRUSTABLES_BASE_URL'],
+    api_key=os.environ['TRUSTABLES_API_KEY'],
+    org_id=os.environ['TRUSTABLES_ORG_ID'],
+    environment=Environment.SIMULATOR,
+)
+# For configuration loaded at startup (invalid values raise ValueError):
+environment = Environment(os.environ['TRUSTABLES_ENVIRONMENT'])
+```
+
+`Environment.SIMULATOR`, `Environment.SANDBOX` and `Environment.PRODUCTION` use
+`simulator`, `sandbox` and `production` on the wire. Existing supported string
+values remain compatible. Values are exact and case-sensitive; there is no fallback
+for typos. Production is defined for configuration consistency but is **not supported
+by this preview**: selecting it throws before any request or widget mounting.
+Environment selection does not provision access or change the API base URL. A
+production-hosted application can still use Simulator or Sandbox.

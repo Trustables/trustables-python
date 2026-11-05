@@ -1,6 +1,7 @@
+from trustables import Environment
 import os
 from config import client
-api = client('simulator')
+api = client(Environment.SIMULATOR)
 campaign_id = os.environ.get('TRUSTABLES_CAMPAIGN_ID') or api.create_simulator_campaign({'name':'SDK example','purpose':'Test integration outcomes','profile':'pid'})['id']
 print('Save campaign ID for reuse:', campaign_id)
 session = api.create_session(campaign_id)

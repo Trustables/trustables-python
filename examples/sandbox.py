@@ -1,7 +1,8 @@
+from trustables import Environment
 import json
 from pathlib import Path
 from config import client, required
-api = client('sandbox')
+api = client(Environment.SANDBOX)
 # Use permitted claims, an approved redirect and your provisioned certificate/instance IDs.
 body = json.loads(Path(required('TRUSTABLES_REQUEST_FILE')).read_text())
 request = api.create_verification_request(body)

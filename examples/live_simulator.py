@@ -1,7 +1,8 @@
 """Opt-in live acceptance; a person selects each outcome in the hosted UI."""
+from trustables import Environment
 from datetime import datetime, timezone
 from config import client, required
-api = client('simulator')
+api = client(Environment.SIMULATOR)
 campaign_id = required('TRUSTABLES_CAMPAIGN_ID')
 for scenario, status, accepted in [('approved','completed',True),('consent_rejected','failed',False),('missing_attributes','failed',False),('ineligible','completed',True),('timeout','expired',False)]:
     session = api.create_session(campaign_id)
