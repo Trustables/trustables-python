@@ -5,6 +5,7 @@ from typing import Any, Literal, cast
 from urllib.error import HTTPError
 from urllib.parse import quote, urlsplit
 from urllib.request import Request, build_opener, HTTPRedirectHandler
+from .environment import Environment
 from .types import (Campaign, CampaignBody, CreateVerificationRequestBody,
                     VerificationRequestResponse, VerificationSessionResponse,
                     SessionStatusResponse, SimulatorInspect, SimulatorResult)
@@ -27,7 +28,7 @@ class _NoRedirect(HTTPRedirectHandler):
 
 class Trustables:
     def __init__(self, *, base_url: str, api_key: str, org_id: str,
-                 environment: Literal['simulator', 'sandbox'], timeout: float = 10,
+                 environment: Environment | Literal['simulator', 'sandbox', 'production'], timeout: float = 10,
                  allow_insecure_localhost: bool = False,
                  allow_insecure_http: bool = False):
         url = urlsplit(base_url)
@@ -37,8 +38,12 @@ class Trustables:
             raise ValueError('base_url must be an HTTPS origin (no path, credentials, query or fragment)')
         if not api_key or '\r' in api_key or '\n' in api_key or not org_id:
             raise ValueError('api_key and org_id are required')
-        if environment not in {'simulator', 'sandbox'}:
-            raise ValueError('Unsupported environment')
+        try:
+            environment = Environment(environment)
+        except (ValueError, TypeError):
+            raise ValueError('Invalid environment: expected simulator, sandbox or production') from None
+        if environment is Environment.PRODUCTION:
+            raise ValueError('Production is not supported by this SDK preview')
         if not math.isfinite(timeout) or timeout <= 0:
             raise ValueError('timeout must be positive')
         self._base = base_url.rstrip('/')
