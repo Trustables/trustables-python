@@ -120,18 +120,37 @@ class Trustables:
         self._require_simulator()
         return cast(SimulatorResult, self._request('POST', '/api/v1/rp/simulator/complete', {'token': token, 'scenario': scenario}, capability=True))
 
-    def wait_for_session(self, session_id: str, *, timeout: float = 60, interval: float = 1) -> SessionStatusResponse:
+    def wait_for_session(self, session_id: str, *, timeout: float = 60, interval: float = 1, max_transient_errors: int = 0) -> SessionStatusResponse:
         if not math.isfinite(timeout) or not math.isfinite(interval) or timeout <= 0 or interval <= 0:
             raise ValueError('Polling timeout and interval must be positive')
+        if isinstance(max_transient_errors, bool) or not isinstance(max_transient_errors, int) or not 0 <= max_transient_errors <= 10:
+            raise ValueError('max_transient_errors must be an integer from 0 to 10')
+        errors = 0
         deadline = time.monotonic() + timeout
         path = self._org_path + '/sessions/' + self._id(session_id) + '/status'
         while time.monotonic() < deadline:
             try:
                 result = self._request('GET', path, timeout=min(self._timeout, max(.001, deadline - time.monotonic())))
-            except Exception:
+            except Exception as error:
                 if time.monotonic() >= deadline:
                     raise PollTimeoutError('Session polling deadline reached') from None
-                raise
+                if not isinstance(error, TrustablesError) or error.status not in (429, 502, 503, 504) or errors >= max_transient_errors:
+                    raise
+                errors += 1
+                delay = interval
+                if error.retry_after:
+                    try:
+                        seconds = float(error.retry_after)
+                        if math.isfinite(seconds):
+                            delay = max(delay, seconds)
+                    except ValueError:
+                        from email.utils import parsedate_to_datetime
+                        try:
+                            delay = max(delay, parsedate_to_datetime(error.retry_after).timestamp() - time.time())
+                        except (TypeError, ValueError, OverflowError):
+                            pass
+                time.sleep(min(delay, max(0, deadline - time.monotonic())))
+                continue
             if result['status'] != 'pending':
                 return cast(SessionStatusResponse, result)
             time.sleep(min(interval, max(0, deadline - time.monotonic())))

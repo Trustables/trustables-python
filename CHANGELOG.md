@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3
+
+- Add opt-in, bounded retries for transient status polling errors, respecting Retry-After and the overall deadline.
+- Keep authentication failures and all session creation single-attempt.
+
+
 ## 0.1.2
 
 - Export typed Environment values and validate environment configuration at startup.
