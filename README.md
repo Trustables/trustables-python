@@ -1,6 +1,6 @@
 # Trustables Python SDK
 
-Server-side preview, version **0.1.3**. Requires Python 3.11+. Preview interfaces may change. Supports Simulator and provisioned Wallet Sandbox access.
+Server-side preview, version **0.1.4**. Requires Python 3.11+. Preview interfaces may change. Supports Simulator and provisioned Wallet Sandbox access.
 
 ## Install
 
@@ -147,3 +147,12 @@ for typos. Production is defined for configuration consistency but is **not supp
 by this preview**: selecting it throws before any request or widget mounting.
 Environment selection does not provision access or change the API base URL. A
 production-hosted application can still use Simulator or Sandbox.
+
+### Recovering status polling
+
+Transient HTTP 429, 502, 503 and 504 responses may be retried only by the
+explicit polling helper. Set `max_transient_errors=3`; the default remains zero. The total retry budget
+is at most ten and shares the polling deadline. `Retry-After` is respected within
+that deadline. Authentication failures, malformed responses and session creation
+are never automatically retried. A browser redirect is only a hint: fetch the
+expected session through your backend and check acceptance before continuing.

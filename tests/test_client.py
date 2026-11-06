@@ -152,3 +152,36 @@ class ClientTests(unittest.TestCase):
             self.assertEqual(len(calls),1)
         finally:
             server.shutdown(); server.server_close(); worker.join()
+
+class PollRecoveryTests(unittest.TestCase):
+    server = ClientTests.server
+    def test_transient_recovery_is_opt_in_and_bounded(self):
+        client, requests = self.server(lambda _, n: (503, {}, {'Retry-After': '0'}) if n < 3 else (200, CASES[0]['result'], {}))
+        self.assertEqual(client.wait_for_session('session', interval=.001, max_transient_errors=2), CASES[0]['result'])
+        self.assertEqual(len(requests), 3)
+        for code in (401, 403, 429, 502, 503, 504):
+            client, requests = self.server(lambda _, n, code=code: (code, {}, {}))
+            with self.assertRaises(TrustablesError):
+                client.wait_for_session('session', interval=.001, max_transient_errors=2)
+            self.assertEqual(len(requests), 1 if code in (401, 403) else 3)
+
+    def test_retry_after_respects_deadline_and_validates_budget(self):
+        client, requests = self.server(lambda *_: (429, {}, {'Retry-After': '3600'}))
+        with self.assertRaises(PollTimeoutError):
+            client.wait_for_session('session', timeout=.03, interval=.001, max_transient_errors=2)
+        self.assertEqual(len(requests), 1)
+        for value in (-1, 11, 1.5, True):
+            with self.assertRaises(ValueError):
+                client.wait_for_session('session', max_transient_errors=value)
+
+    def test_default_does_not_retry_status_and_http_date_respects_deadline(self):
+        from email.utils import formatdate
+        import time
+        client, requests = self.server(lambda *_: (503, {}, {}))
+        with self.assertRaises(TrustablesError):
+            client.wait_for_session('session')
+        self.assertEqual(len(requests), 1)
+        client, requests = self.server(lambda *_: (429, {}, {'Retry-After': formatdate(time.time() + 3600, usegmt=True)}))
+        with self.assertRaises(PollTimeoutError):
+            client.wait_for_session('session', timeout=.03, max_transient_errors=2)
+        self.assertEqual(len(requests), 1)
