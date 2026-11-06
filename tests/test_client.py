@@ -41,11 +41,11 @@ class ClientTests(unittest.TestCase):
         client.cancel_widget('a/b')
         client.create_qr('https://merchant.example/handoff#opaque', size=240)
         self.assertEqual([(r['method'], r['path']) for r in requests], [
-            ('GET', '/api/v1/rp/orgs/org/sessions/a%2Fb/widget'),
-            ('POST', '/api/v1/rp/orgs/org/sessions/a%2Fb/widget'),
-            ('GET', '/api/v1/rp/orgs/org/sessions/a%2Fb/widget/status'),
-            ('POST', '/api/v1/rp/orgs/org/sessions/a%2Fb/widget/cancel'),
-            ('POST', '/api/v1/rp/orgs/org/qr')])
+            ('GET', '/v1/rp/orgs/org/sessions/a%2Fb/widget'),
+            ('POST', '/v1/rp/orgs/org/sessions/a%2Fb/widget'),
+            ('GET', '/v1/rp/orgs/org/sessions/a%2Fb/widget/status'),
+            ('POST', '/v1/rp/orgs/org/sessions/a%2Fb/widget/cancel'),
+            ('POST', '/v1/rp/orgs/org/qr')])
         self.assertTrue(all(r['headers']['x-trustables-environment']=='sandbox' for r in requests))
         self.assertEqual(requests[-1]['body']['size'],240)
         simulator, unused = self.server(lambda *_: (200, {}, {}))
@@ -71,11 +71,11 @@ class ClientTests(unittest.TestCase):
                 self.assertEqual(client.get_session(session['session_id']), fixture['result'])
                 self.assertEqual(requests[0]['headers']['authorization'], 'Bearer fixture-key')
                 self.assertEqual(requests[0]['headers']['x-trustables-environment'], 'simulator')
-                self.assertEqual(requests[0]['path'], '/api/v1/rp/orgs/org/simulator/campaigns')
+                self.assertEqual(requests[0]['path'], '/v1/rp/orgs/org/simulator/campaigns')
                 self.assertEqual(requests[0]['method'], 'POST')
-                self.assertEqual(requests[1]['path'], '/api/v1/rp/orgs/org/verification-requests/campaign/session')
-                self.assertEqual(requests[2]['path'], '/api/v1/rp/simulator/complete')
-                self.assertEqual(requests[3]['path'], '/api/v1/rp/orgs/org/sessions/'+session['session_id']+'/status')
+                self.assertEqual(requests[1]['path'], '/v1/rp/orgs/org/verification-requests/campaign/session')
+                self.assertEqual(requests[2]['path'], '/v1/rp/simulator/complete')
+                self.assertEqual(requests[3]['path'], '/v1/rp/orgs/org/sessions/'+session['session_id']+'/status')
                 self.assertEqual(requests[1]['method'], 'GET')
                 self.assertNotIn('authorization', requests[2]['headers'])
                 self.assertNotIn('x-trustables-environment', requests[2]['headers'])

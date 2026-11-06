@@ -30,6 +30,7 @@ class VerificationRequestResponse(TypedDict):
     rp_instance_id: NotRequired[str | None]
 
 class VerificationSessionResponse(TypedDict):
+    crm_delivery_id: NotRequired[str | None]
     session_id: str
     authorization_request_url: str
     request_uri: NotRequired[str | None]
@@ -52,6 +53,10 @@ class SessionStatusResponse(TypedDict):
     accepted: NotRequired[bool | None]
     failure_reason: NotRequired[str | None]
     verified_claims: NotRequired[dict[str, Any] | None]
+    verified_attributes: NotRequired[dict[str, Any] | None]
+    credential_metadata: NotRequired[dict[str, Any] | None]
+    attributes_retained: NotRequired[bool]
+    identity_attributes_retained: NotRequired[bool]
     mode: NotRequired[str]
     simulated: NotRequired[bool]
     billable: NotRequired[bool | None]
@@ -59,19 +64,22 @@ class SessionStatusResponse(TypedDict):
     verification_status: NotRequired[str | None]
     trust_status: NotRequired[str | None]
 
+class SessionInput(TypedDict):
+    crm_record_id: str
+
 class Error(TypedDict):
     detail: NotRequired[Any]
 
 class CampaignBody(TypedDict):
     name: str
     purpose: str
-    profile: NotRequired[Literal['pid', 'mdl']]
+    profile: NotRequired[Literal['pid', 'mdl', 'student']]
 
 class Campaign(TypedDict):
     id: str
     name: str
     purpose: str
-    profile: Literal['pid', 'mdl']
+    profile: Literal['pid', 'mdl', 'student']
     mode: Literal['simulator']
     simulated: Literal[True]
 
@@ -91,6 +99,10 @@ class SimulatorInspect(TypedDict):
     accepted: NotRequired[bool | None]
     failure_reason: NotRequired[str | None]
     verified_claims: NotRequired[None]
+    verified_attributes: NotRequired[None]
+    credential_metadata: NotRequired[None]
+    attributes_retained: NotRequired[bool]
+    identity_attributes_retained: NotRequired[bool]
     mode: Literal['simulator']
     simulated: Literal[True]
     billable: Literal[False]
@@ -109,6 +121,10 @@ class SimulatorResult(TypedDict):
     accepted: NotRequired[bool | None]
     failure_reason: NotRequired[str | None]
     verified_claims: NotRequired[None]
+    verified_attributes: NotRequired[None]
+    credential_metadata: NotRequired[None]
+    attributes_retained: NotRequired[bool]
+    identity_attributes_retained: NotRequired[bool]
     mode: Literal['simulator']
     simulated: Literal[True]
     billable: Literal[False]

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+
+- Default to https://api.trustables.de with an optional base URL override.
+- Use /v1 customer API routes and consistent TRUSTABLES_ example settings.
+
 ## 0.1.2
 
 - Export typed Environment values and validate environment configuration at startup.
