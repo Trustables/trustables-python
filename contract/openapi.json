@@ -3,7 +3,7 @@
   "info": {
     "title": "Trustables SDK API",
     "version": "0.2.0",
-    "description": "Integration reference for verification requests, sessions and results. Replace the example hostname with the API base URL assigned to your organisation."
+    "description": "Integration reference for verification requests, sessions and results. Use the public customer API origin; override it only for development or testing."
   },
   "servers": [
     {

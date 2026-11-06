@@ -9,4 +9,4 @@ require reviewed snapshot updates in both SDK repositories; no automatic release
 Simulator fixtures are extracted from backend pure helpers at a fixed UTC clock.
 They are synthetic contract fixtures, not evidence of a live wallet exchange.
 
-OpenAPI SHA-256: `3f123faea8440f2ce6ff199b49b1ff420243c09519a43fef6a6b8b7462270155`
+OpenAPI SHA-256: `7ebb970c83667ba37ed35ec97f89a4899614857d119e765627e565d449f427a4`
