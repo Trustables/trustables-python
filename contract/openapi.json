@@ -2,17 +2,17 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Trustables SDK API",
-    "version": "0.1.0",
-    "description": "Integration reference for verification requests, sessions and results. Replace the example hostname with the API base URL assigned to your organisation."
+    "version": "0.2.0",
+    "description": "Integration reference for verification requests, sessions and results. Use the public customer API origin; override it only for development or testing."
   },
   "servers": [
     {
-      "url": "https://your-api-host.example",
-      "description": "Placeholder: replace with your assigned API base URL"
+      "url": "https://api.trustables.de",
+      "description": "Public customer API; verification mode is selected separately"
     }
   ],
   "paths": {
-    "/api/v1/rp/orgs/{org_id}/verification-requests": {
+    "/v1/rp/orgs/{org_id}/verification-requests": {
       "post": {
         "summary": "Create a verification request",
         "tags": [
@@ -172,7 +172,7 @@
         "x-trustables-retry-safe": false
       }
     },
-    "/api/v1/rp/orgs/{org_id}/verification-requests/{request_id}/session": {
+    "/v1/rp/orgs/{org_id}/verification-requests/{request_id}/session": {
       "get": {
         "summary": "Start a fresh verification session",
         "tags": [
@@ -331,9 +331,87 @@
         "description": "Creates a new session on each call. Do not prefetch or automatically retry. Wallet requests need an active, unexpired request and configured RP credentials. Simulator uses a campaign ID and a Simulator key; no wallet credentials are required. Open the returned authorization URL unchanged, including any hosted review step.",
         "operationId": "createSession",
         "x-trustables-retry-safe": false
+      },
+      "post": {
+        "summary": "Start a verification session for an existing CRM record",
+        "tags": [
+          "Verification"
+        ],
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "org_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Trustables-Environment",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "simulator",
+                "sandbox"
+              ]
+            },
+            "description": "Explicit environment selection. Sandbox requires provisioned wallet access."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationSessionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API credentials"
+          },
+          "403": {
+            "description": "Organisation access or environment mismatch"
+          },
+          "422": {
+            "description": "Request validation failed"
+          }
+        },
+        "description": "Creates a new session on each call. Do not prefetch or automatically retry. Wallet requests need an active, unexpired request and configured RP credentials. Simulator uses a campaign ID and a Simulator key; no wallet credentials are required. Open the returned authorization URL unchanged, including any hosted review step.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionInput"
+              }
+            }
+          }
+        },
+        "operationId": "createCrmSession",
+        "x-trustables-retry-safe": false
       }
     },
-    "/api/v1/rp/orgs/{org_id}/sessions/{state_id}/status": {
+    "/v1/rp/orgs/{org_id}/sessions/{state_id}/status": {
       "get": {
         "summary": "Read verification session status",
         "tags": [
@@ -492,7 +570,7 @@
         "x-trustables-retry-safe": true
       }
     },
-    "/api/v1/rp/orgs/{org_id}/simulator/campaigns": {
+    "/v1/rp/orgs/{org_id}/simulator/campaigns": {
       "post": {
         "operationId": "createSimulatorCampaign",
         "summary": "Create a Simulator campaign",
@@ -606,7 +684,7 @@
         "x-trustables-retry-safe": false
       }
     },
-    "/api/v1/rp/simulator/inspect": {
+    "/v1/rp/simulator/inspect": {
       "post": {
         "operationId": "inspectSimulator",
         "summary": "Inspect a Simulator browser session",
@@ -674,7 +752,7 @@
         "x-trustables-retry-safe": true
       }
     },
-    "/api/v1/rp/simulator/complete": {
+    "/v1/rp/simulator/complete": {
       "post": {
         "operationId": "completeSimulator",
         "summary": "Select a synthetic outcome",
@@ -980,6 +1058,18 @@
       },
       "VerificationSessionResponse": {
         "properties": {
+          "crm_delivery_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Crm Delivery Id"
+          },
           "session_id": {
             "title": "Session Id",
             "type": "string"
@@ -1164,6 +1254,42 @@
             "default": null,
             "title": "Verified Claims"
           },
+          "verified_attributes": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Verified Attributes"
+          },
+          "credential_metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Credential Metadata"
+          },
+          "attributes_retained": {
+            "default": false,
+            "title": "Attributes Retained",
+            "type": "boolean"
+          },
+          "identity_attributes_retained": {
+            "default": false,
+            "title": "Identity Attributes Retained",
+            "type": "boolean"
+          },
           "mode": {
             "default": "wallet",
             "title": "Mode",
@@ -1231,6 +1357,21 @@
         "title": "SessionStatusResponse",
         "type": "object"
       },
+      "SessionInput": {
+        "properties": {
+          "crm_record_id": {
+            "maxLength": 140,
+            "minLength": 1,
+            "title": "Crm Record Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "crm_record_id"
+        ],
+        "title": "SessionInput",
+        "type": "object"
+      },
       "Error": {
         "type": "object",
         "properties": {
@@ -1257,7 +1398,8 @@
             "default": "pid",
             "enum": [
               "pid",
-              "mdl"
+              "mdl",
+              "student"
             ],
             "title": "Profile",
             "type": "string"
@@ -1301,7 +1443,8 @@
             "default": "pid",
             "enum": [
               "pid",
-              "mdl"
+              "mdl",
+              "student"
             ],
             "title": "Profile",
             "type": "string"
@@ -1468,6 +1611,22 @@
           },
           "verified_claims": {
             "type": "null"
+          },
+          "verified_attributes": {
+            "type": "null"
+          },
+          "credential_metadata": {
+            "type": "null"
+          },
+          "attributes_retained": {
+            "default": false,
+            "title": "Attributes Retained",
+            "type": "boolean"
+          },
+          "identity_attributes_retained": {
+            "default": false,
+            "title": "Identity Attributes Retained",
+            "type": "boolean"
           },
           "mode": {
             "const": "simulator",

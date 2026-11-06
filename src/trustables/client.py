@@ -27,7 +27,7 @@ class _NoRedirect(HTTPRedirectHandler):
 
 
 class Trustables:
-    def __init__(self, *, base_url: str, api_key: str, org_id: str,
+    def __init__(self, *, base_url: str = 'https://api.trustables.de', api_key: str, org_id: str,
                  environment: Environment | Literal['simulator', 'sandbox', 'production'], timeout: float = 10,
                  allow_insecure_localhost: bool = False,
                  allow_insecure_http: bool = False):
@@ -48,7 +48,7 @@ class Trustables:
             raise ValueError('timeout must be positive')
         self._base = base_url.rstrip('/')
         self._key = api_key
-        self._org_path = '/api/v1/rp/orgs/' + self._id(org_id)
+        self._org_path = '/v1/rp/orgs/' + self._id(org_id)
         self._environment, self._timeout = environment, timeout
         self._opener = build_opener(_NoRedirect())
 
@@ -114,11 +114,11 @@ class Trustables:
 
     def inspect_simulator(self, token: str) -> SimulatorInspect:
         self._require_simulator()
-        return cast(SimulatorInspect, self._request('POST', '/api/v1/rp/simulator/inspect', {'token': token}, capability=True))
+        return cast(SimulatorInspect, self._request('POST', '/v1/rp/simulator/inspect', {'token': token}, capability=True))
 
     def complete_simulator(self, token: str, scenario: Literal['approved', 'consent_rejected', 'missing_attributes', 'ineligible', 'timeout']) -> SimulatorResult:
         self._require_simulator()
-        return cast(SimulatorResult, self._request('POST', '/api/v1/rp/simulator/complete', {'token': token, 'scenario': scenario}, capability=True))
+        return cast(SimulatorResult, self._request('POST', '/v1/rp/simulator/complete', {'token': token, 'scenario': scenario}, capability=True))
 
     def wait_for_session(self, session_id: str, *, timeout: float = 60, interval: float = 1, max_transient_errors: int = 0) -> SessionStatusResponse:
         if not math.isfinite(timeout) or not math.isfinite(interval) or timeout <= 0 or interval <= 0:

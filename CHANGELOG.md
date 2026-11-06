@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.4
+
+- Default to https://api.trustables.de with an optional base URL override.
+- Use /v1 customer API routes and consistent TRUSTABLES_ example settings.
+
 ## 0.1.3
 
 - Add opt-in, bounded retries for transient status polling errors, respecting Retry-After and the overall deadline.
